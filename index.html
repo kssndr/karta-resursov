@@ -1,0 +1,1026 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Карта ресурсов и ограничений — аналитика личности</title>
+  <meta name="description" content="Карта ресурсов и ограничений — аналитика личности для тех, кто уже многое о себе понимает, но хочет увидеть систему: ресурсы, сценарии, внутренние ограничения и точки опоры." />
+  <style>
+    :root {
+      --bg: #f6f0e4;
+      --bg-soft: #fbf7ee;
+      --ink: #062632;
+      --ink-soft: #34515b;
+      --teal: #0b3d46;
+      --teal-2: #0f5962;
+      --gold: #cfb88b;
+      --gold-soft: #eadfc7;
+      --cream: #fffaf0;
+      --line: rgba(6, 38, 50, 0.12);
+      --shadow: 0 24px 80px rgba(6, 38, 50, 0.14);
+      --radius-xl: 36px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --max: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 5%, rgba(207, 184, 139, 0.42), transparent 30%),
+        radial-gradient(circle at 90% 12%, rgba(15, 89, 98, 0.20), transparent 34%),
+        linear-gradient(180deg, #fbf7ee 0%, #f6f0e4 48%, #efe5d2 100%);
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      overflow: hidden;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: rgba(251, 247, 238, 0.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 70% 28%, #f7efd9 0 14%, transparent 15%),
+        conic-gradient(from 120deg, var(--gold), var(--teal), var(--gold));
+      box-shadow: 0 6px 16px rgba(207, 184, 139, 0.35);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 13px 20px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      color: #fffaf0;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-2) 100%);
+      box-shadow: 0 14px 32px rgba(6, 38, 50, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(6, 38, 50, 0.30);
+    }
+
+    .btn-secondary {
+      color: var(--teal);
+      background: rgba(255, 250, 240, 0.72);
+      border-color: rgba(207, 184, 139, 0.45);
+    }
+
+    .hero {
+      position: relative;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 92px 22px 72px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(340px, .9fr);
+      align-items: center;
+      gap: 54px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(207, 184, 139, 0.55);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, 0.72);
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+    }
+
+    h1 {
+      font-size: clamp(42px, 7vw, 78px);
+      max-width: 760px;
+    }
+
+    .lead {
+      margin: 24px 0 0;
+      max-width: 640px;
+      font-size: clamp(18px, 2vw, 22px);
+      color: var(--ink-soft);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .hero-note {
+      margin-top: 20px;
+      color: var(--ink-soft);
+      font-size: 15px;
+    }
+
+    .code {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--gold-soft);
+      color: var(--teal);
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .visual-card {
+      position: relative;
+      min-height: 520px;
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 78% 16%, rgba(255, 250, 240, 0.92), transparent 20%),
+        radial-gradient(circle at 24% 76%, rgba(207, 184, 139, 0.30), transparent 26%),
+        linear-gradient(135deg, #06303a 0%, #0f5962 54%, #d5bd8b 125%);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .22);
+    }
+
+    .visual-card::before,
+    .visual-card::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(234, 223, 199, 0.45);
+    }
+
+    .visual-card::before {
+      width: 520px;
+      height: 520px;
+      right: -190px;
+      top: -100px;
+    }
+
+    .visual-card::after {
+      width: 310px;
+      height: 310px;
+      left: -120px;
+      bottom: -80px;
+      border-color: rgba(207, 184, 139, .35);
+    }
+
+    .compass {
+      position: absolute;
+      right: 52px;
+      top: 48px;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 250, 240, 0.32);
+    }
+
+    .compass::before,
+    .compass::after {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      background: rgba(255, 250, 240, 0.62);
+      transform-origin: left center;
+    }
+
+    .compass::before {
+      width: 180px;
+      height: 1px;
+      transform: rotate(0deg) translate(-50%, -50%);
+    }
+
+    .compass::after {
+      width: 180px;
+      height: 1px;
+      transform: rotate(90deg) translate(-50%, -50%);
+    }
+
+    .path {
+      position: absolute;
+      left: 72px;
+      right: 36px;
+      bottom: 84px;
+      height: 180px;
+      border-radius: 50% 0 50% 0;
+      border-top: 20px solid rgba(255, 244, 217, .86);
+      transform: rotate(-14deg);
+      filter: drop-shadow(0 10px 18px rgba(255, 244, 217, .18));
+    }
+
+    .profile {
+      position: absolute;
+      left: 72px;
+      bottom: 64px;
+      width: 230px;
+      height: 300px;
+      background:
+        radial-gradient(circle at 52% 22%, rgba(255, 250, 240, .28), transparent 25%),
+        linear-gradient(180deg, rgba(255,250,240,.9), rgba(255,250,240,.42));
+      clip-path: path("M111 8 C70 8 42 38 43 76 C43 105 60 126 77 146 C66 176 45 190 35 229 L188 229 C178 190 155 176 144 146 C169 122 181 93 174 62 C166 28 145 8 111 8 Z");
+      opacity: .85;
+    }
+
+    .mini-panel {
+      position: absolute;
+      left: 42px;
+      top: 54px;
+      width: 250px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 250, 240, .12);
+      border: 1px solid rgba(255, 250, 240, .24);
+      color: #fffaf0;
+      backdrop-filter: blur(10px);
+    }
+
+    .mini-panel b {
+      display: block;
+      font-size: 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+      margin-bottom: 12px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin: 10px 0;
+      font-size: 13px;
+    }
+
+    .bar {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,250,240,.18);
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--gold), #fff1c9);
+    }
+
+    section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 72px 22px;
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+
+    .section-kicker {
+      color: var(--teal-2);
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: clamp(32px, 4.4vw, 52px);
+    }
+
+    .section-head p {
+      margin: 18px 0 0;
+      color: var(--ink-soft);
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      padding: 26px;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 250, 240, 0.70);
+      border: 1px solid rgba(6, 38, 50, 0.10);
+      box-shadow: 0 12px 40px rgba(6, 38, 50, 0.06);
+    }
+
+    .card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--ink-soft);
+    }
+
+    .pain-card {
+      padding-left: 58px;
+    }
+
+    .pain-card::before {
+      content: "—";
+      position: absolute;
+      left: 24px;
+      top: 26px;
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .dark-band {
+      max-width: none;
+      margin: 48px 0 0;
+      padding: 0;
+      background:
+        radial-gradient(circle at 5% 20%, rgba(207, 184, 139, 0.25), transparent 34%),
+        linear-gradient(135deg, #052631 0%, #0b3d46 70%, #132f34 100%);
+      color: #fffaf0;
+    }
+
+    .dark-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 76px 22px;
+    }
+
+    .dark-band h2,
+    .dark-band h3 {
+      color: #fffaf0;
+    }
+
+    .dark-band p,
+    .dark-band li {
+      color: rgba(255, 250, 240, 0.78);
+    }
+
+    .not-list {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .not-pill {
+      padding: 16px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 250, 240, 0.22);
+      background: rgba(255, 250, 240, 0.07);
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-list li {
+      position: relative;
+      padding-left: 32px;
+      color: var(--ink-soft);
+    }
+
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .42em;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, var(--gold) 0 35%, transparent 37%),
+        rgba(207, 184, 139, 0.18);
+      border: 1px solid rgba(207, 184, 139, 0.58);
+    }
+
+    .process {
+      counter-reset: step;
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 250, 240, 0.74);
+      border: 1px solid rgba(6, 38, 50, .10);
+    }
+
+    .step::before {
+      content: counter(step);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--teal);
+      background: var(--gold-soft);
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    .step h3 {
+      font-size: 20px;
+      margin: 0 0 4px;
+    }
+
+    .quote {
+      position: relative;
+      padding: 36px;
+      border-radius: var(--radius-xl);
+      background: rgba(255,250,240,.82);
+      border: 1px solid rgba(207,184,139,.42);
+      box-shadow: var(--shadow);
+    }
+
+    .quote::before {
+      content: "“";
+      position: absolute;
+      right: 28px;
+      top: -18px;
+      font-size: 120px;
+      line-height: 1;
+      color: rgba(207,184,139,.25);
+      font-family: Georgia, serif;
+    }
+
+    .quote p {
+      margin: 0;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
+    .quote .author {
+      margin-top: 18px;
+      color: var(--ink-soft);
+      font-size: 15px;
+    }
+
+    .faq {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      border-radius: var(--radius-lg);
+      background: rgba(255,250,240,.74);
+      border: 1px solid var(--line);
+      padding: 18px 22px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--teal);
+    }
+
+    details p {
+      color: var(--ink-soft);
+      margin: 12px 0 0;
+    }
+
+    .author-box {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: 34px;
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(135deg, rgba(255,250,240,.84), rgba(234,223,199,.55));
+      border: 1px solid rgba(207,184,139,.42);
+      box-shadow: 0 16px 54px rgba(6,38,50,.08);
+    }
+
+    .author-avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 65% 30%, rgba(255,250,240,.9), transparent 19%),
+        linear-gradient(135deg, var(--teal), var(--gold));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .author-avatar::after {
+      content: "";
+      position: absolute;
+      left: 48px;
+      top: 32px;
+      width: 74px;
+      height: 98px;
+      border-radius: 48% 48% 44% 44%;
+      background: rgba(255,250,240,.72);
+      clip-path: ellipse(46% 50% at 50% 50%);
+    }
+
+    .cta {
+      text-align: center;
+      padding-bottom: 96px;
+    }
+
+    .cta-box {
+      border-radius: 42px;
+      padding: 54px 32px;
+      background:
+        radial-gradient(circle at 88% 15%, rgba(207,184,139,.35), transparent 28%),
+        linear-gradient(135deg, #fffaf0, #eadfc7);
+      border: 1px solid rgba(207,184,139,.42);
+      box-shadow: var(--shadow);
+    }
+
+    .cta-box h2 {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .cta-box p {
+      max-width: 680px;
+      margin: 18px auto 0;
+      color: var(--ink-soft);
+      font-size: 18px;
+    }
+
+    .copy-row {
+      margin: 28px auto 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 999px;
+      background: rgba(255,250,240,.82);
+      border: 1px solid rgba(207,184,139,.54);
+    }
+
+    .copy-code {
+      padding: 0 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      color: var(--teal);
+    }
+
+    .copy-button {
+      border: none;
+      border-radius: 999px;
+      min-height: 40px;
+      padding: 0 16px;
+      background: var(--teal);
+      color: #fffaf0;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 24px 22px 38px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 920px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 56px;
+      }
+
+      .visual-card {
+        min-height: 420px;
+      }
+
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .not-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .author-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .nav-links {
+        display: none;
+      }
+
+      section {
+        padding: 54px 18px;
+      }
+
+      .hero {
+        padding: 54px 18px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .visual-card {
+        min-height: 360px;
+      }
+
+      .mini-panel {
+        width: calc(100% - 48px);
+        left: 24px;
+        top: 28px;
+      }
+
+      .profile {
+        transform: scale(.78);
+        transform-origin: left bottom;
+        left: 38px;
+      }
+
+      .not-list {
+        grid-template-columns: 1fr;
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+      }
+
+      .quote {
+        padding: 28px 22px;
+      }
+
+      .quote p {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <span>Карта ресурсов и ограничений</span>
+        </div>
+        <nav class="nav-links" aria-label="Основная навигация">
+          <a href="#about">Что это</a>
+          <a href="#process">Процесс</a>
+          <a href="#questions">Вопросы</a>
+          <a href="#contact">Следующий шаг</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Аналитика личности</div>
+          <h1>Для тех, кто уже многое о себе понимает, но хочет увидеть систему</h1>
+          <p class="lead">
+            Если вы снова сталкиваетесь с похожими сценариями, внутренним сопротивлением,
+            тревогой перед действиями или потерей ресурса — эта карта помогает увидеть,
+            что именно происходит внутри и на что можно опереться.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Хочу узнать подробнее</a>
+            <a class="btn btn-secondary" href="#about">Что входит в карту</a>
+          </div>
+          <p class="hero-note">
+            Для старта напишите кодовое слово <span class="code">КАРТА</span>
+          </p>
+        </div>
+
+        <div class="visual-card" aria-hidden="true">
+          <div class="compass"></div>
+          <div class="profile"></div>
+          <div class="path"></div>
+          <div class="mini-panel">
+            <b>Внутренняя навигация</b>
+            <div class="mini-row"><span>Ресурсы</span><div class="bar"><span style="width: 86%"></span></div></div>
+            <div class="mini-row"><span>Сценарии</span><div class="bar"><span style="width: 72%"></span></div></div>
+            <div class="mini-row"><span>Опора</span><div class="bar"><span style="width: 64%"></span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pain">
+        <div class="section-head">
+          <div class="section-kicker">Если вы замечаете</div>
+          <h2>Иногда проблема не в том, что вы мало понимаете себя</h2>
+          <p>Иногда не хватает целостной карты: как связаны реакции, цели, тревоги, ограничения и сильные стороны.</p>
+        </div>
+        <div class="grid grid-3">
+          <div class="card pain-card"><h3>«Я понимаю, но не меняюсь»</h3><p>Вы много осмысляли, но поведение, выбор или реакции всё равно повторяются.</p></div>
+          <div class="card pain-card"><h3>«Я снова в похожем сценарии»</h3><p>В отношениях, работе, целях или реализации будто включается один и тот же внутренний маршрут.</p></div>
+          <div class="card pain-card"><h3>«Я не понимаю, где мой ресурс»</h3><p>Сложно отличить сильную сторону от напряжения, защиты или привычной компенсации.</p></div>
+          <div class="card pain-card"><h3>«Цели буксуют»</h3><p>Есть желание двигаться, но появляется сопротивление, тревога, прокрастинация или потеря энергии.</p></div>
+          <div class="card pain-card"><h3>«Мне нужна не общая диагностика»</h3><p>Хочется увидеть не разрозненные черты, а систему, которая объясняет именно ваш опыт.</p></div>
+          <div class="card pain-card"><h3>«С чего начинать работу?»</h3><p>Важно понять, какие темы сейчас самые горячие и на что лучше опираться в движении.</p></div>
+        </div>
+      </section>
+
+      <section class="dark-band" id="about">
+        <div class="dark-inner">
+          <div class="section-head">
+            <div class="section-kicker" style="color: var(--gold-soft)">Что это не</div>
+            <h2>Не диагноз, не ярлык и не список недостатков</h2>
+            <p>
+              Это персональная навигация, которая помогает увидеть связи между вашими реакциями,
+              сценариями, ресурсами, ограничениями и реальными жизненными задачами.
+            </p>
+          </div>
+          <div class="not-list">
+            <div class="not-pill">Не диагноз</div>
+            <div class="not-pill">Не ярлык</div>
+            <div class="not-pill">Не “починить себя”</div>
+            <div class="not-pill">Не мотивация</div>
+            <div class="not-pill">Не тест ради теста</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div class="section-kicker">Что входит в карту</div>
+          <h2>Несколько диагностических блоков соединяются в единую картину</h2>
+          <p>Главное — не отдельные тесты, а то, как результаты связываются между собой и проявляются в реальной жизни.</p>
+        </div>
+        <div class="grid grid-3">
+          <div class="card"><h3>ОКЭАН и 27 черт</h3><p>Темперамент, личностные факторы и уточняющие черты, которые влияют на выборы, реакции и стиль действия.</p></div>
+          <div class="card"><h3>Тип привязанности</h3><p>Как устроены близость, доверие, тревога, дистанция и способы искать опору в контакте.</p></div>
+          <div class="card"><h3>Метапрограммы</h3><p>Устойчивые внутренние программы, которые могут вести к повторяющимся сценариям и ограничениям.</p></div>
+          <div class="card"><h3>Стратегии и части личности</h3><p>Какие внутренние части поддерживают привычные реакции, защиту, движение или сопротивление.</p></div>
+          <div class="card"><h3>Интеграция результатов</h3><p>Данные соединяются в общую карту: где ресурс, где напряжение, где повторяется сценарий.</p></div>
+          <div class="card"><h3>Связь с вашим запросом</h3><p>Разбор строится не абстрактно, а через ваши цели, ситуации, отношения, работу и текущие задачи.</p></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div class="section-kicker">Что вы получаете</div>
+          <h2>Материал, к которому можно возвращаться</h2>
+          <p>Карта становится не одноразовым тестом, а навигацией для дальнейшей работы с собой.</p>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <ul class="check-list">
+              <li>Понимание ключевых ресурсов и сильных сторон.</li>
+              <li>Зоны внутреннего напряжения и потери опоры.</li>
+              <li>Повторяющиеся сценарии и паттерны.</li>
+              <li>Стратегии, которые помогают или ограничивают.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <ul class="check-list">
+              <li>Развернутый аналитический отчёт.</li>
+              <li>Встреча-разбор с объяснением результатов.</li>
+              <li>Связь карты с целями, отношениями и реализацией.</li>
+              <li>Возможные направления дальнейшей работы.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="process">
+        <div class="section-head">
+          <div class="section-kicker">Как проходит процесс</div>
+          <h2>Спокойная последовательность без давления</h2>
+        </div>
+        <div class="process">
+          <div class="step"><div><h3>Вы проходите тестирование</h3><p>Тесты можно проходить не за один раз, но каждый отдельный тест лучше завершать за один подход.</p></div></div>
+          <div class="step"><div><h3>Я собираю и анализирую результаты</h3><p>Смотрю не только отдельные показатели, а связи между ними.</p></div></div>
+          <div class="step"><div><h3>Готовлю аналитический отчёт</h3><p>В отчёте собирается карта ресурсов, ограничений, сценариев и зон внимания.</p></div></div>
+          <div class="step"><div><h3>Мы проводим встречу-разбор</h3><p>Обсуждаем результаты, отклики и то, как это проявляется в вашей жизни.</p></div></div>
+          <div class="step"><div><h3>Связываем карту с вашим запросом</h3><p>Переводим данные в практическое понимание: что сейчас важно и на что можно опираться.</p></div></div>
+        </div>
+      </section>
+
+      <section id="questions">
+        <div class="section-head">
+          <div class="section-kicker">Важные вопросы</div>
+          <h2>Перед стартом нормально сомневаться</h2>
+        </div>
+        <div class="faq">
+          <details open>
+            <summary>Нужно ли сначала “дозреть”?</summary>
+            <p>Не обязательно. Иногда именно карта помогает увидеть, что сейчас происходит внутри и почему движение откладывается.</p>
+          </details>
+          <details>
+            <summary>Нужно ли после этого сразу всё прорабатывать?</summary>
+            <p>Нет. Карта не обязывает вас срочно начинать интенсивную работу. Вы можете использовать её постепенно, в своём темпе.</p>
+          </details>
+          <details>
+            <summary>Не слишком ли это большой материал?</summary>
+            <p>Материал действительно глубокий. Но его не нужно усвоить за один раз. Отчёт остаётся у вас как навигация, к которой можно возвращаться.</p>
+          </details>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div class="section-kicker">Кому подходит</div>
+          <h2>Для тех, кто уже интересуется собой и хочет большей ясности</h2>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Подходит, если вы</h3>
+            <ul class="check-list">
+              <li>уже работали с собой;</li>
+              <li>хотите понять свои сценарии глубже;</li>
+              <li>ищете не общие советы, а персональную карту;</li>
+              <li>готовы смотреть на себя системно и бережно.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Особенно полезно</h3>
+            <p>Предпринимателям, руководителям, специалистам, помогающим практикам и людям, для которых личная эффективность связана с внутренней опорой, ясностью и пониманием себя.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="author-box">
+          <div class="author-avatar" aria-hidden="true"></div>
+          <div>
+            <div class="section-kicker">Почему я могу быть проводником</div>
+            <h2 style="font-size: clamp(28px, 3.5vw, 42px)">Я работаю не только с данными, а с живым человеком и его реальным запросом</h2>
+            <p style="color: var(--ink-soft); margin: 16px 0 0;">
+              Для меня важно связать результаты в понятную карту: где ресурс, где ограничение,
+              какие сценарии повторяются, что может быть точкой опоры и как это проявляется
+              в целях, отношениях, работе, решениях и внутреннем состоянии.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div class="section-kicker">Отзыв</div>
+          <h2>Что меняется после карты</h2>
+        </div>
+        <div class="quote">
+          <p>
+            Мне очень полезно и интересно было увидеть, что это целая система.
+            И каждый винтик в ней работает по определённой схеме, поэтому я получаю то, что получаю.
+          </p>
+          <p style="margin-top: 18px;">
+            Это видение даёт понимание и возможность выбирать осознанно, замечать свои паттерны,
+            заранее предугадывать, к чему может привести включение автоматического сценария.
+          </p>
+          <p style="margin-top: 18px;">
+            Я точно не зря пошла на разбор, потому что теперь я могу замечать свои сценарии,
+            а значит имею возможность выбирать другие мысли и действия вместо привычных.
+          </p>
+          <div class="author">Отзыв участницы аналитического разбора</div>
+        </div>
+      </section>
+
+      <section class="cta" id="contact">
+        <div class="cta-box">
+          <h2>Хотите понять, подойдёт ли вам этот формат?</h2>
+          <p>
+            Напишите мне кодовое слово <strong>КАРТА</strong>. Я расскажу, как проходит аналитика,
+            сколько времени занимает процесс и какой результат вы получите на выходе.
+          </p>
+          <div class="copy-row">
+            <span class="copy-code" id="codeText">КАРТА</span>
+            <button class="copy-button" type="button" onclick="copyCode()">Скопировать</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      © Карта ресурсов и ограничений. Аналитика личности для ясности, опоры и осознанного движения.
+    </footer>
+  </div>
+
+  <script>
+    function copyCode() {
+      const code = document.getElementById('codeText').textContent.trim();
+      navigator.clipboard?.writeText(code).then(() => {
+        const button = document.querySelector('.copy-button');
+        const old = button.textContent;
+        button.textContent = 'Скопировано';
+        setTimeout(() => button.textContent = old, 1600);
+      }).catch(() => {
+        alert('Кодовое слово: ' + code);
+      });
+    }
+  </script>
+</body>
+</html>
