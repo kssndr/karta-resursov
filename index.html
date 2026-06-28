@@ -640,6 +640,48 @@
       font-size: 18px;
     }
 
+    .messenger-row {
+  margin: 28px auto 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.messenger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 13px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 800;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.messenger-button:hover {
+  transform: translateY(-2px);
+}
+
+.messenger-button.whatsapp {
+  color: #fffaf0;
+  background: #1f8f5f;
+  box-shadow: 0 14px 32px rgba(31, 143, 95, 0.22);
+}
+
+.messenger-button.telegram {
+  color: #fffaf0;
+  background: #2481cc;
+  box-shadow: 0 14px 32px rgba(36, 129, 204, 0.22);
+}
+
+.messenger-note {
+  margin-top: 16px !important;
+  font-size: 15px !important;
+  color: var(--ink-soft);
+}
+
     .copy-row {
       margin: 28px auto 0;
       display: inline-flex;
@@ -990,10 +1032,29 @@
             Напишите мне кодовое слово <strong>КАРТА</strong>. Я расскажу, как проходит аналитика,
             сколько времени занимает процесс и какой результат вы получите на выходе.
           </p>
-          <div class="copy-row">
-            <span class="copy-code" id="codeText">КАРТА</span>
-            <button class="copy-button" type="button" onclick="copyCode()">Скопировать</button>
+          <div class="messenger-row">
+            <a 
+              class="messenger-button whatsapp" 
+              href="https://wa.me/79119324446?text=%D0%9A%D0%90%D0%A0%D0%A2%D0%90" 
+              target="_blank"
+              rel="noopener"
+            >
+              Написать в WhatsApp
+            </a>
+          
+            <a 
+              class="messenger-button telegram" 
+              href="https://t.me/InnRomanov" 
+              target="_blank"
+              rel="noopener"
+            >
+              Написать в Telegram
+            </a>
           </div>
+          
+          <p class="messenger-note">
+            Кодовое слово для сообщения: <strong>КАРТА</strong>
+          </p>
         </div>
       </section>
     </main>
